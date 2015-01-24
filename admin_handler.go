@@ -8,10 +8,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// AdminHandler handles requests for the admin web interface.
 type AdminHandler struct {
 	hooks *HookStore
 }
 
+// Index renders the main page that shows a list of hooks.
 func (h AdminHandler) Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	hooks, err := h.hooks.List()
 	if err != nil {
@@ -22,10 +24,12 @@ func (h AdminHandler) Index(w http.ResponseWriter, r *http.Request, _ httprouter
 	render("hooks/index", w, hooks)
 }
 
+// NewHook renders the new hook form.
 func (h AdminHandler) NewHook(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	render("hooks/new", w, nil)
 }
 
+// CreateHook handles POST requests from the new hook form.
 func (h AdminHandler) CreateHook(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	hook := Hook{ID: r.FormValue("id")}
 	if err := h.hooks.Create(hook); err != nil {
@@ -37,6 +41,7 @@ func (h AdminHandler) CreateHook(w http.ResponseWriter, r *http.Request, _ httpr
 	http.Redirect(w, r, fmt.Sprintf("/hooks/edit/%s", hook.ID), http.StatusSeeOther)
 }
 
+// EditHook renders the edit hook form
 func (h AdminHandler) EditHook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	hook, err := h.hooks.Find(p.ByName("id"))
 	if err != nil {
@@ -46,6 +51,7 @@ func (h AdminHandler) EditHook(w http.ResponseWriter, r *http.Request, p httprou
 	render("hooks/edit", w, hook)
 }
 
+// DeleteHook handles POST requests to delete a hook
 func (h AdminHandler) DeleteHook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	if err := h.hooks.Delete(p.ByName("id")); err != nil {
 		http.NotFound(w, r)

@@ -2,18 +2,21 @@ package main
 
 import (
 	"errors"
-	"github.com/boltdb/bolt"
 	"log"
 	"regexp"
 	"strings"
+
+	"github.com/boltdb/bolt"
 )
 
+// HookStore is the database that stores hook configuration and data.
 type HookStore struct {
 	db *bolt.DB
 }
 
+// Hook is the configuration for a single hook.
 type Hook struct {
-	ID string
+	ID string // unique hook identifier
 }
 
 // List returns a list of all hooks.

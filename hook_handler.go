@@ -13,10 +13,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// HookHandler is the webhook HTTP handler.
 type HookHandler struct {
 	hooks *HookStore
 }
 
+// ReceiveHook handles incoming webhook HTTP requests.
 func (h *HookHandler) ReceiveHook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	id := p.ByName("id")
 
