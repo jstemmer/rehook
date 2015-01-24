@@ -2,12 +2,56 @@
 
 <div class="row">
 	<div class="col-md-6 col-md-offset-3">
-		<h1>{{.ID}}</h1>
+		<h1>{{.Hook.ID}}</h1>
+
 		<div class="panel panel-default">
 			<div class="panel-body">
-				<form action="/hooks/delete/{{.ID}}" method="POST">
-					<div>
-						<button type="submit" value="delete" class="btn btn-danger">Delete</button>
+				<div class="well text-center">Request</div>
+				<div class="text-center component-arrow">
+					<span class="glyphicon glyphicon-arrow-down"></span>
+				</div>
+
+				{{range .Hook.Components}}
+				<form action="/hooks/edit/{{$.Hook.ID}}/update" method="POST">
+					<div class="well">
+						{{.Name}}
+						<div class="btn-group pull-right">
+							<a href="/hooks/edit/{{$.Hook.ID}}/edit/{{.ID}}" class="btn btn-default btn-xs">edit</a>
+							<button type="submit" name="action" value="move-up" class="btn btn-default btn-xs">move up</button>
+							<button type="submit" name="action" value="move-down" class="btn btn-default btn-xs">move down</button>
+							<button type="submit" name="action" value="delete" class="btn btn-default btn-xs">delete</button>
+						</div>
+						<div class="clearfix"></div>
+						<input type="hidden" name="c" value="{{.ID}}">
+					</div>
+				</form>
+				<div class="text-center component-arrow">
+					<span class="glyphicon glyphicon-arrow-down"></span>
+				</div>
+				{{end}}
+
+				<div class="well text-center">
+				<form action="/hooks/edit/{{.Hook.ID}}" method="POST">
+					<div class="btn-group">
+						<button href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+							Add component <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							{{range $id, $c := $.Components}}
+							<li><a href="/hooks/edit/{{$.Hook.ID}}/add?c={{$id}}">{{$c.Name}}</a></li>
+							{{end}}
+						</ul>
+					</div>
+				</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<form action="/hooks/edit/{{.Hook.ID}}" method="POST">
+					<div class="pull-right">
+						<button name="action" type="submit" value="delete" class="btn btn-danger">Delete hook</button>
 					</div>
 				</form>
 			</div>

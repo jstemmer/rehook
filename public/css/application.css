@@ -21,3 +21,9 @@ body {
 	height: 80px;
 	padding: 0.5em 0;
 }
+
+.component-arrow {
+	color: #eee;
+	font-size: 4em;
+	margin: -10px 0 0 0;
+}

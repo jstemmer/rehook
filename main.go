@@ -20,8 +20,9 @@ var (
 
 // Database constants
 var (
-	BucketHooks = []byte("hooks")
-	BucketStats = []byte("stats")
+	BucketHooks      = []byte("hooks")
+	BucketComponents = []byte("components")
+	BucketStats      = []byte("stats")
 )
 
 func main() {
@@ -39,7 +40,7 @@ func main() {
 	hookStore := &HookStore{db}
 
 	// webhooks
-	hh := &HookHandler{hookStore}
+	hh := &HookHandler{hookStore, db}
 	router := httprouter.New()
 	router.GET("/h/:id", hh.ReceiveHook)
 	router.POST("/h/:id", hh.ReceiveHook)
@@ -55,17 +56,23 @@ func main() {
 	arouter.Handler("GET", "/public/*path", http.StripPrefix("/public", http.FileServer(http.Dir("public"))))
 	arouter.GET("/", ah.Index)
 	arouter.Handler("GET", "/hooks", http.RedirectHandler("/", http.StatusMovedPermanently))
+
 	arouter.GET("/hooks/new", ah.NewHook)
 	arouter.POST("/hooks", ah.CreateHook)
 	arouter.GET("/hooks/edit/:id", ah.EditHook)
-	arouter.POST("/hooks/delete/:id", ah.DeleteHook)
+	arouter.POST("/hooks/edit/:id", ah.UpdateHook)
+
+	arouter.GET("/hooks/edit/:id/add", ah.AddComponent)
+	arouter.POST("/hooks/edit/:id/create", ah.CreateComponent)
+	arouter.POST("/hooks/edit/:id/edit/:c", ah.EditComponent)
+	arouter.POST("/hooks/edit/:id/update", ah.UpdateComponent)
 
 	log.Printf("Admin interface on %s", *adminAddr)
 	log.Print(http.ListenAndServe(*adminAddr, arouter))
 }
 
 func initBuckets(t *bolt.Tx) error {
-	for _, name := range [][]byte{BucketHooks, BucketStats} {
+	for _, name := range [][]byte{BucketHooks, BucketStats, BucketComponents} {
 		if _, err := t.CreateBucketIfNotExists(name); err != nil {
 			return err
 		}

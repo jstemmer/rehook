@@ -1,21 +1,17 @@
 package main
 
 import (
-	"crypto/rand"
-	"encoding/hex"
-	"fmt"
-	"io"
 	"log"
 	"net/http"
-	"os"
-	"time"
 
+	"github.com/boltdb/bolt"
 	"github.com/julienschmidt/httprouter"
 )
 
 // HookHandler is the webhook HTTP handler.
 type HookHandler struct {
 	hooks *HookStore
+	db    *bolt.DB
 }
 
 // ReceiveHook handles incoming webhook HTTP requests.
@@ -29,49 +25,46 @@ func (h *HookHandler) ReceiveHook(w http.ResponseWriter, r *http.Request, p http
 		return
 	}
 
-	wf := &WriteFile{"log"}
-	if err := wf.Process(hook, r); err != nil {
-		log.Printf("error processing hook %s: %s", id, err)
+	req, err := loadRequest(r)
+	if err != nil {
+		log.Printf("error reading request: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
-		return
 	}
 
-	if err := h.hooks.Inc(id); err != nil {
-		log.Printf("error incrementing count for %s: %s", id, err)
-	}
-	log.Printf("[received] %s %s", r.Method, r.RequestURI)
+	go h.processRequest(hook, req)
 	w.WriteHeader(http.StatusOK)
 }
 
-// WriteFile writes any incoming hook to a logfile in dir.
-type WriteFile struct {
-	dir string
-}
+func (h *HookHandler) processRequest(hook *Hook, r Request) {
+	for i, c := range hook.Components {
+		// TODO: remove debug logging
+		log.Printf("%d: processing %s", i+1, c.Name)
 
-// Process processes the incoming request r for hook h.
-func (w WriteFile) Process(h *Hook, r *http.Request) error {
-	buf := make([]byte, 8)
-	if _, err := rand.Read(buf); err != nil {
-		return err
+		cmp, ok := components[c.Name]
+		if !ok {
+			log.Printf("skipping unknown component: %s", c.Name)
+			continue
+		}
+
+		tx, err := h.db.Begin(true)
+		if err != nil {
+			log.Printf("error starting db tx: %s", err)
+			break
+		}
+
+		b := tx.Bucket(BucketComponents).Bucket([]byte(c.Name))
+		if err := cmp.Process(*hook, r, b); err != nil {
+			tx.Rollback()
+			log.Printf("processing stopped: %s", err)
+			break
+		}
+		if err := tx.Commit(); err != nil {
+			log.Printf("error committing db tx: %s", err)
+			break
+		}
 	}
 
-	now := time.Now()
-	filename := fmt.Sprintf("%s/hook_%s_%s_%s.log", w.dir, h.ID, now.Format("2006-01-02_15-04-05"), hex.EncodeToString(buf))
-
-	f, err := os.Create(filename)
-	if err != nil {
-		return err
+	if err := h.hooks.Inc(hook.ID); err != nil {
+		log.Printf("error incrementing count for %s: %s", hook.ID, err)
 	}
-	defer f.Close()
-
-	fmt.Fprintf(f, "Hook %q received at %s\n", h.ID, time.Now())
-	fmt.Fprintf(f, "From %v\n\n", r.RemoteAddr)
-	fmt.Fprintf(f, "%s %s\n\n", r.Method, r.RequestURI)
-	fmt.Fprintf(f, "Headers:\n")
-	for k, v := range r.Header {
-		fmt.Fprintf(f, "%s = %v\n", k, v)
-	}
-	fmt.Fprintf(f, "\nBody:\n")
-	_, err = io.Copy(f, r.Body)
-	return err
 }

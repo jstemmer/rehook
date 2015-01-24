@@ -1,0 +1,23 @@
+{{define "page"}}
+
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<h1>{{.ID}} <small>Github validator</small></h1>
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<form action="/hooks/edit/{{.ID}}/create" method="POST">
+					<div class="form-group">
+						<label for="param-secret">Secret</label>
+						<input type="text" name="param-secret" class="form-control" autofocus>
+					</div>
+					<div class="form-group">
+						<input type="hidden" name="c" value="github-validator">
+						<button type="submit" class="btn btn-primary">Create</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{end}}

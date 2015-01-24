@@ -26,8 +26,9 @@ type HookStore struct {
 
 // Hook is the configuration for a single hook.
 type Hook struct {
-	ID    string // unique hook identifier
-	Count Count  // request counts
+	ID         string // unique hook identifier
+	Count      Count  // request counts
+	Components []HookComponent
 }
 
 // List returns a list of all hooks.
@@ -52,12 +53,12 @@ func (s *HookStore) List() (hooks []Hook, err error) {
 // Find returns the hook with the given id if it exists, nil otherwise.
 func (s *HookStore) Find(id string) (h *Hook, err error) {
 	err = s.db.View(func(tx *bolt.Tx) error {
-		value := tx.Bucket(BucketHooks).Get([]byte(id))
-		if value == nil {
+		v := tx.Bucket(BucketHooks).Get([]byte(id))
+		if v == nil {
 			return errors.New("hook does not exist")
 		}
 		h = &Hook{ID: id}
-		return nil
+		return gobDecode(v, &h.Components)
 	})
 	return h, err
 }
@@ -109,19 +110,15 @@ func (s *HookStore) RequestCount(id string) (c Count, err error) {
 		for i := 0; i < len(c.Recent); i++ {
 			ts = ts.Add(1 * time.Hour)
 			k := []byte(fmt.Sprintf("%s-%s", id, ts.Format(StatsTimeFormat)))
-			if v := b.Get(k); v != nil {
-				if err := gobDecode(v, &c.Recent[i]); err != nil {
-					return err
-				}
+			if err := gobDecode(b.Get(k), &c.Recent[i]); err != nil {
+				return err
 			}
 		}
 
 		// retrieve total count
 		k := []byte(fmt.Sprintf("%s-total", id))
-		if v := b.Get(k); v != nil {
-			if err := gobDecode(v, &c.Total); err != nil {
-				return err
-			}
+		if err := gobDecode(b.Get(k), &c.Total); err != nil {
+			return err
 		}
 		return nil
 	})
@@ -145,10 +142,8 @@ func increment(key []byte, b *bolt.Bucket) (err error) {
 	var count int
 
 	var v []byte
-	if v = b.Get(key); v != nil {
-		if err = gobDecode(v, &count); err != nil {
-			return err
-		}
+	if err = gobDecode(b.Get(key), &count); err != nil {
+		return err
 	}
 	count++
 	if v, err = gobEncode(count); err != nil {
@@ -164,5 +159,58 @@ func gobEncode(v interface{}) ([]byte, error) {
 }
 
 func gobDecode(p []byte, v interface{}) error {
+	if len(p) == 0 {
+		return nil
+	}
 	return gob.NewDecoder(bytes.NewBuffer(p)).Decode(v)
+}
+
+func (s *HookStore) AddComponent(h Hook, c string, params map[string]string) error {
+	cmp, ok := components[c]
+	if !ok {
+		return fmt.Errorf("Unknown component %s", c)
+	}
+
+	return s.db.Update(func(tx *bolt.Tx) error {
+		// each component gets their own bucket for storage
+		cb, err := tx.Bucket(BucketComponents).CreateBucketIfNotExists([]byte(c))
+		if err != nil {
+			return err
+		}
+
+		if err := cmp.Init(h, params, cb); err != nil {
+			return err
+		}
+
+		// ok, now add the component to the current hook
+		id := fmt.Sprintf("%d", time.Now().Unix())
+		// TODO: fetch components from database instead of using h.Components
+		hc := append(h.Components, HookComponent{id, c})
+
+		b := tx.Bucket(BucketHooks)
+		v, err := gobEncode(hc)
+		if err != nil {
+			return err
+		}
+		return b.Put([]byte(h.ID), v)
+	})
+}
+
+func (s *HookStore) DeleteComponent(h Hook, id string) error {
+	return s.db.Update(func(tx *bolt.Tx) error {
+		hc := h.Components
+		for i, cmp := range hc {
+			if cmp.ID == id {
+				hc = append(hc[:i], hc[i+1:]...)
+				break
+			}
+		}
+
+		b := tx.Bucket(BucketHooks)
+		v, err := gobEncode(hc)
+		if err != nil {
+			return err
+		}
+		return b.Put([]byte(h.ID), v)
+	})
 }
