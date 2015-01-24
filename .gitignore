@@ -2,3 +2,4 @@ rehook
 log/*.log
 tmp
 data.db
+rehook-*.tar.gz
