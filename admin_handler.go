@@ -1,13 +1,19 @@
 package main
 
 import (
-	"fmt"
+	"html/template"
+	"log"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 type AdminHandler struct {
 }
 
-func (h AdminHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "<html><h2>rehook admin</h2></html>")
+func (h AdminHandler) Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	t := template.Must(template.ParseFiles("views/index.html"))
+	if err := t.Execute(w, nil); err != nil {
+		log.Printf("error: %s", err)
+	}
 }

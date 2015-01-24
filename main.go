@@ -2,9 +2,10 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 var (
@@ -16,7 +17,7 @@ func main() {
 	// webhooks
 	mux := http.NewServeMux()
 	mux.Handle("/h/", &HookHandler{})
-	mux.HandleFunc("/", rootHandler)
+	mux.Handle("/", http.NotFoundHandler())
 
 	go func() {
 		log.Printf("Listening on %s", *listenAddr)
@@ -24,18 +25,10 @@ func main() {
 	}()
 
 	// admin interface
-	amux := http.NewServeMux()
-	amux.Handle("/", &AdminHandler{})
+	ah := &AdminHandler{}
+	arouter := httprouter.New()
+	arouter.GET("/", ah.Index)
 
 	log.Printf("Admin interface on %s", *adminAddr)
-	log.Print(http.ListenAndServe(*adminAddr, amux))
-}
-
-func rootHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" || r.RequestURI != "/" {
-		http.NotFound(w, r)
-		return
-	}
-	log.Printf("[r] %s %s", r.Method, r.RequestURI)
-	fmt.Fprintf(w, "OK\n")
+	log.Print(http.ListenAndServe(*adminAddr, arouter))
 }
