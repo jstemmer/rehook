@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/boltdb/bolt"
@@ -70,14 +71,14 @@ func (h AdminHandler) DeleteHook(w http.ResponseWriter, r *http.Request, p httpr
 }
 
 type Hook struct {
-	Name string
+	ID string
 }
 
 func (h AdminHandler) listHooks() (hooks []Hook, err error) {
 	err = h.db.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket(BucketHooks).Cursor()
 		for k, _ := c.First(); k != nil; k, _ = c.Next() {
-			hooks = append(hooks, Hook{Name: string(k)})
+			hooks = append(hooks, Hook{ID: string(k)})
 		}
 		return nil
 	})
@@ -99,6 +100,13 @@ func (h AdminHandler) findHook(name string) (hook *Hook, err error) {
 func (h AdminHandler) createHook(name string) error {
 	if strings.TrimSpace(name) == "" {
 		return errors.New("hook name is required")
+	}
+
+	if match, err := regexp.MatchString("^[a-z0-9-]+$", name); err != nil || !match {
+		if err != nil {
+			log.Printf("create hook regexp error: %s", err)
+		}
+		return errors.New("name contains invalid characters")
 	}
 
 	return h.db.Update(func(tx *bolt.Tx) error {
