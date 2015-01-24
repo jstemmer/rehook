@@ -8,10 +8,6 @@ import (
 	"strings"
 )
 
-var (
-	ErrHookNotExists = errors.New("hook does not exist")
-)
-
 type HookStore struct {
 	db *bolt.DB
 }
