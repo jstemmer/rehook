@@ -154,7 +154,6 @@ func increment(key []byte, b *bolt.Bucket) (err error) {
 	if v, err = gobEncode(count); err != nil {
 		return err
 	}
-	log.Printf("incremented %v to %d", string(key), count)
 	return b.Put(key, v)
 }
 
