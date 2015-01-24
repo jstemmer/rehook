@@ -37,13 +37,14 @@ func main() {
 	}
 
 	// webhooks
-	mux := http.NewServeMux()
-	mux.Handle("/h/", &HookHandler{})
-	mux.Handle("/", http.NotFoundHandler())
+	hh := &HookHandler{db}
+	router := httprouter.New()
+	router.GET("/h/:id", hh.ReceiveHook)
+	router.POST("/h/:id", hh.ReceiveHook)
 
 	go func() {
 		log.Printf("Listening on %s", *listenAddr)
-		log.Print(http.ListenAndServe(*listenAddr, mux))
+		log.Print(http.ListenAndServe(*listenAddr, router))
 	}()
 
 	// admin interface
