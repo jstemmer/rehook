@@ -21,16 +21,41 @@ type HookHandler struct {
 func (h *HookHandler) ReceiveHook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	id := p.ByName("id")
 
-	// log to file for now
-	f, err := os.Create(filename(id))
-	if err != nil {
-		log.Printf("error creating file: %s", err)
-		http.Error(w, "error", http.StatusInternalServerError)
+	// TODO: retrieve hook from database by id
+	hook := &Hook{id}
+
+	wf := &WriteFile{"log"}
+	if err := wf.Process(hook, r); err != nil {
+		log.Printf("error processing hook %s: %s", id, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
+	}
+	log.Printf("[received] %s %s", r.Method, r.RequestURI)
+	w.WriteHeader(http.StatusOK)
+}
+
+// WriteFile writes any incoming hook to a logfile in dir.
+type WriteFile struct {
+	dir string
+}
+
+// Process processes the incoming request r for hook h.
+func (w WriteFile) Process(h *Hook, r *http.Request) error {
+	buf := make([]byte, 8)
+	if _, err := rand.Read(buf); err != nil {
+		return err
+	}
+
+	now := time.Now()
+	filename := fmt.Sprintf("%s/hook_%s_%s_%s.log", w.dir, h.ID, now.Format("2006-01-02_15-04-05"), hex.EncodeToString(buf))
+
+	f, err := os.Create(filename)
+	if err != nil {
+		return err
 	}
 	defer f.Close()
 
-	fmt.Fprintf(f, "Hook %q received at %s\n", id, time.Now())
+	fmt.Fprintf(f, "Hook %q received at %s\n", h.ID, time.Now())
 	fmt.Fprintf(f, "From %v\n\n", r.RemoteAddr)
 	fmt.Fprintf(f, "%s %s\n\n", r.Method, r.RequestURI)
 	fmt.Fprintf(f, "Headers:\n")
@@ -38,19 +63,6 @@ func (h *HookHandler) ReceiveHook(w http.ResponseWriter, r *http.Request, p http
 		fmt.Fprintf(f, "%s = %v\n", k, v)
 	}
 	fmt.Fprintf(f, "\nBody:\n")
-	if _, err := io.Copy(f, r.Body); err != nil {
-		log.Printf("error copying request body to file: %s", err)
-		http.Error(w, "error", http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	log.Printf("[received] %s %s", r.Method, r.RequestURI)
-}
-
-func filename(id string) string {
-	buf := make([]byte, 8)
-	if _, err := rand.Read(buf); err != nil {
-		panic(err)
-	}
-	return fmt.Sprintf("log/hook_%s_%s_%s.log", id, time.Now().Format("2006-01-02_15-04-05"), hex.EncodeToString(buf))
+	_, err = io.Copy(f, r.Body)
+	return err
 }
