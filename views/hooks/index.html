@@ -7,8 +7,10 @@
 {{range $index, $element := .}}
 	<div>
 		<h2><a href="/hooks/edit/{{.ID}}">{{.ID}}</a> ({{.Count.Total}})</h2>
+
 		<div id="graph{{$index}}" class="graph">
 		</div>
+		<small>Incoming requests of the last 48 hours</small>
 		<script>draw_graph("#graph{{$index}}", {{.Count.Recent}})</script>
 	</div>
 {{else}}
