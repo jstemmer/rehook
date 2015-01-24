@@ -1,4 +1,7 @@
 body {
+	font-family: 'Open Sans', sans-serif;
+	background-color: #eff3f8;
+	padding-top: 70px;
 }
 
 .axis path {
@@ -13,9 +16,7 @@ body {
 }
 
 .graph {
-	width: 500px;
-	height: 72px;
-	border: 1px solid #000;
-	padding: 0.5em;
-	padding-bottom: 0;
+	width: 100%;
+	height: 80px;
+	padding: 0.5em 0;
 }
