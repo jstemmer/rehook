@@ -1,10 +1,14 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
 	"errors"
+	"fmt"
 	"log"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/boltdb/bolt"
 )
@@ -72,4 +76,44 @@ func (s *HookStore) Delete(id string) error {
 	return s.db.Update(func(tx *bolt.Tx) error {
 		return tx.Bucket(BucketHooks).Delete([]byte(id))
 	})
+}
+
+// Inc increments the count for the hook with the given id.
+func (s *HookStore) Inc(id string) error {
+	return s.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(BucketStats)
+		// increment; group by date and hour
+		err := increment([]byte(fmt.Sprintf("%s-%s", id, time.Now().Format("2006-01-02-15"))), b)
+		if err != nil {
+			return err
+		}
+		return increment([]byte(fmt.Sprintf("%s-total", id)), b)
+	})
+}
+
+func increment(key []byte, b *bolt.Bucket) (err error) {
+	var count int
+
+	var v []byte
+	if v = b.Get(key); v != nil {
+		if err = gobDecode(v, &count); err != nil {
+			return err
+		}
+	}
+	count++
+	if v, err = gobEncode(count); err != nil {
+		return err
+	}
+	log.Printf("incremented %v to %d", string(key), count)
+	return b.Put(key, v)
+}
+
+func gobEncode(v interface{}) ([]byte, error) {
+	var buf bytes.Buffer
+	err := gob.NewEncoder(&buf).Encode(v)
+	return buf.Bytes(), err
+}
+
+func gobDecode(p []byte, v interface{}) error {
+	return gob.NewDecoder(bytes.NewBuffer(p)).Decode(v)
 }

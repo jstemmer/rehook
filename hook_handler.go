@@ -35,6 +35,10 @@ func (h *HookHandler) ReceiveHook(w http.ResponseWriter, r *http.Request, p http
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	if err := h.hooks.Inc(id); err != nil {
+		log.Printf("error incrementing count for %s: %s", id, err)
+	}
 	log.Printf("[received] %s %s", r.Method, r.RequestURI)
 	w.WriteHeader(http.StatusOK)
 }
