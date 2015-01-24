@@ -10,19 +10,22 @@ import (
 	"os"
 	"time"
 
-	"github.com/boltdb/bolt"
 	"github.com/julienschmidt/httprouter"
 )
 
 type HookHandler struct {
-	db *bolt.DB
+	hooks *HookStore
 }
 
 func (h *HookHandler) ReceiveHook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	id := p.ByName("id")
 
-	// TODO: retrieve hook from database by id
-	hook := &Hook{id}
+	hook, err := h.hooks.Find(p.ByName("id"))
+	if err != nil {
+		log.Printf("no hook configured for %q", id)
+		http.NotFound(w, r)
+		return
+	}
 
 	wf := &WriteFile{"log"}
 	if err := wf.Process(hook, r); err != nil {

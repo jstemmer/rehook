@@ -39,7 +39,7 @@ func main() {
 	hookStore := &HookStore{db}
 
 	// webhooks
-	hh := &HookHandler{db}
+	hh := &HookHandler{hookStore}
 	router := httprouter.New()
 	router.GET("/h/:id", hh.ReceiveHook)
 	router.POST("/h/:id", hh.ReceiveHook)
