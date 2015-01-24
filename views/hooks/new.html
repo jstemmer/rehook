@@ -1,0 +1,17 @@
+{{define "page"}}
+
+<h1>New hook</h1>
+<form action="/hooks" method="POST">
+	<div>
+		<label for="name">Hook name (only lowercase characters, numbers or dashes allowed)</label>
+		<br>
+		<input type="text" name="name" required autofocus>
+		<br><br>
+	</div>
+	<div>
+		<button type="submit">Create</button>
+		<a href="/">cancel</a>
+	</div>
+</form>
+
+{{end}}

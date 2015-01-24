@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"html/template"
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -23,28 +23,22 @@ func (h AdminHandler) Index(w http.ResponseWriter, r *http.Request, _ httprouter
 		http.Error(w, "error", http.StatusInternalServerError)
 		return
 	}
-
-	t := template.Must(template.ParseFiles("views/index.html"))
-	if err := t.Execute(w, hooks); err != nil {
-		log.Printf("error: %s", err)
-	}
+	render("hooks/index", w, hooks)
 }
 
 func (h AdminHandler) NewHook(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	t := template.Must(template.ParseFiles("views/newhook.html"))
-	if err := t.Execute(w, nil); err != nil {
-		log.Printf("error: %s", err)
-	}
+	render("hooks/new", w, nil)
 }
 
 func (h AdminHandler) CreateHook(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	name := r.FormValue("name")
-
-	err := h.createHook(name)
-	if err != nil {
+	if err := h.createHook(name); err != nil {
+		// TODO: show flash message instead
 		log.Printf("error creating hook: %s", err)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
 	}
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/hooks/%s", name), http.StatusSeeOther)
 }
 
 func (h AdminHandler) EditHook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -54,11 +48,7 @@ func (h AdminHandler) EditHook(w http.ResponseWriter, r *http.Request, p httprou
 		http.NotFound(w, r)
 		return
 	}
-
-	t := template.Must(template.ParseFiles("views/edithook.html"))
-	if err := t.Execute(w, hook); err != nil {
-		log.Printf("error: %s", err)
-	}
+	render("hooks/edit", w, hook)
 }
 
 func (h AdminHandler) DeleteHook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
