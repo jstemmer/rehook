@@ -36,6 +36,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	hookStore := &HookStore{db}
+
 	// webhooks
 	hh := &HookHandler{db}
 	router := httprouter.New()
@@ -48,13 +50,13 @@ func main() {
 	}()
 
 	// admin interface
-	ah := &AdminHandler{db}
+	ah := &AdminHandler{hookStore}
 	arouter := httprouter.New()
 	arouter.GET("/", ah.Index)
 	arouter.GET("/hooks/new", ah.NewHook)
 	arouter.POST("/hooks", ah.CreateHook)
-	arouter.GET("/hooks/edit/:name", ah.EditHook)
-	arouter.POST("/hooks/delete/:name", ah.DeleteHook)
+	arouter.GET("/hooks/edit/:id", ah.EditHook)
+	arouter.POST("/hooks/delete/:id", ah.DeleteHook)
 
 	log.Printf("Admin interface on %s", *adminAddr)
 	log.Print(http.ListenAndServe(*adminAddr, arouter))
