@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Rehook admin</title>
+	</head>
+	<body>
+		<h1>{{.Name}}</h1>
+		<form action="/hooks/delete/{{.Name}}" method="POST">
+			<div>
+				<button type="submit" value="delete">Delete</button>
+			</div>
+		</form>
+	</body>
+</html>

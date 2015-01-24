@@ -50,6 +50,8 @@ func main() {
 	arouter.GET("/", ah.Index)
 	arouter.GET("/hooks/new", ah.NewHook)
 	arouter.POST("/hooks", ah.CreateHook)
+	arouter.GET("/hooks/edit/:name", ah.EditHook)
+	arouter.POST("/hooks/delete/:name", ah.DeleteHook)
 
 	log.Printf("Admin interface on %s", *adminAddr)
 	log.Print(http.ListenAndServe(*adminAddr, arouter))
