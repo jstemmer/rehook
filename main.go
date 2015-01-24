@@ -52,6 +52,7 @@ func main() {
 	// admin interface
 	ah := &AdminHandler{hookStore}
 	arouter := httprouter.New()
+	arouter.Handler("GET", "/public/*path", http.StripPrefix("/public", http.FileServer(http.Dir("public"))))
 	arouter.GET("/", ah.Index)
 	arouter.Handler("GET", "/hooks", http.RedirectHandler("/", http.StatusMovedPermanently))
 	arouter.GET("/hooks/new", ah.NewHook)
