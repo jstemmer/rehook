@@ -53,6 +53,7 @@ func main() {
 	ah := &AdminHandler{hookStore}
 	arouter := httprouter.New()
 	arouter.GET("/", ah.Index)
+	arouter.Handler("GET", "/hooks", http.RedirectHandler("/", http.StatusMovedPermanently))
 	arouter.GET("/hooks/new", ah.NewHook)
 	arouter.POST("/hooks", ah.CreateHook)
 	arouter.GET("/hooks/edit/:id", ah.EditHook)
