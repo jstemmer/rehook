@@ -1,2 +1,21 @@
 body {
 }
+
+.axis path {
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.axis text {
+	font-family: sans-serif;
+	font-size: 11px;
+}
+
+.graph {
+	width: 500px;
+	height: 72px;
+	border: 1px solid #000;
+	padding: 0.5em;
+	padding-bottom: 0;
+}

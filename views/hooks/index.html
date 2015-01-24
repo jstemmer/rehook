@@ -1,10 +1,15 @@
 {{define "page"}}
 
+<script src="/public/js/graph.js"></script>
+
 <h1>Hooks</h1>
 
-{{range .}}
+{{range $index, $element := .}}
 	<div>
-		<h2><a href="/hooks/edit/{{.ID}}">{{.ID}}</a></h2>
+		<h2><a href="/hooks/edit/{{.ID}}">{{.ID}}</a> ({{.Count.Total}})</h2>
+		<div id="graph{{$index}}" class="graph">
+		</div>
+		<script>draw_graph("#graph{{$index}}", {{.Count.Recent}})</script>
 	</div>
 {{else}}
 	No hooks configured yet.
