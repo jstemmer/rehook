@@ -10,9 +10,16 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// flags
 var (
 	listenAddr = flag.String("http", ":9000", "HTTP listen address")
 	adminAddr  = flag.String("admin", ":9001", "HTTP listen address for admin interface")
+)
+
+// Database constants
+var (
+	BucketHooks = []byte("hooks")
+	BucketStats = []byte("stats")
 )
 
 func main() {
@@ -22,6 +29,10 @@ func main() {
 		log.Fatalf("Could not open database: %s", err)
 	}
 	defer db.Close()
+
+	if err := db.Update(initBuckets); err != nil {
+		log.Fatal(err)
+	}
 
 	// webhooks
 	mux := http.NewServeMux()
@@ -34,10 +45,21 @@ func main() {
 	}()
 
 	// admin interface
-	ah := &AdminHandler{}
+	ah := &AdminHandler{db}
 	arouter := httprouter.New()
 	arouter.GET("/", ah.Index)
+	arouter.GET("/hooks/new", ah.NewHook)
+	arouter.POST("/hooks", ah.CreateHook)
 
 	log.Printf("Admin interface on %s", *adminAddr)
 	log.Print(http.ListenAndServe(*adminAddr, arouter))
+}
+
+func initBuckets(t *bolt.Tx) error {
+	for _, name := range [][]byte{BucketHooks, BucketStats} {
+		if _, err := t.CreateBucketIfNotExists(name); err != nil {
+			return err
+		}
+	}
+	return nil
 }

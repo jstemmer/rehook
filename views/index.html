@@ -6,6 +6,15 @@
 	</head>
 	<body>
 		<h1>Hooks</h1>
-		No hooks configured yet.
+		{{range .}}
+			<div>
+				<h2>{{.Name}}</h2>
+			</div>
+		{{else}}
+			No hooks configured yet.
+		{{end}}
+		<p>
+			<a href="/hooks/new">New hook</a>
+		</p>
 	</body>
 </html>
