@@ -4,7 +4,9 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"time"
 
+	"github.com/boltdb/bolt"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -14,6 +16,13 @@ var (
 )
 
 func main() {
+	// initialize database
+	db, err := bolt.Open("data.db", 0600, &bolt.Options{Timeout: 1 * time.Second})
+	if err != nil {
+		log.Fatalf("Could not open database: %s", err)
+	}
+	defer db.Close()
+
 	// webhooks
 	mux := http.NewServeMux()
 	mux.Handle("/h/", &HookHandler{})

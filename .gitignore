@@ -1,3 +1,4 @@
 rehook
 log/*.log
 tmp
+data.db
