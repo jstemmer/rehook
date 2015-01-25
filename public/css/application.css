@@ -116,3 +116,15 @@ hr {
 	top: 100%;
 	left: 0;
 }
+
+.well-hidden {
+	border: 0;
+	background-color: transparent;
+	box-shadow: none;
+}
+
+.well-dashed {
+	border: 4px dashed #eee;
+	background-color: transparent;
+	box-shadow: none;
+}
