@@ -10,7 +10,7 @@ function draw_graph(e, dataset) {
 		.range([0, h-padding]);
 
 	var scaleX = d3.scale.linear()
-		.domain([48, 0]).range([padding/2, w-(padding)]);
+		.domain([48, 0]).range([padding, w-(padding*2)]);
 
 	d3.select(e).select("svg").remove();
 	var svg = d3.select(e)
@@ -20,13 +20,17 @@ function draw_graph(e, dataset) {
 
 	var axis = d3.svg
 		.axis()
-		.tickFormat(function(d){ return d + "h ago"; })
+		.tickFormat(function(d){
+			var current = new Date();
+			current.setHours(current.getHours() - d);
+			return current.getHours() + ":00";
+		})
 		.scale(scaleX);
 
 	var axisY = d3.svg
 		.axis()
-		.scale(d3.scale.linear().domain([0, d3.max(dataset)]).range([h, 0]))
-		.ticks(3)
+		.scale(d3.scale.linear().domain([0, d3.max(dataset)]).range([(h-padding)-10, 0]))
+		.ticks(2)
 		.orient("left");
 
 	var tip = d3.tip()
@@ -43,7 +47,7 @@ function draw_graph(e, dataset) {
 
 	svg.append("g")
 		.attr("class", "axis")
-		.attr("transform", "translate(31, -" + padding + ")")
+		.attr("transform", "translate(" + ((padding-1)*2) + ", 10)")
 		.call(axisY);
 
 	svg.selectAll("rect")
