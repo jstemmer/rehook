@@ -27,7 +27,7 @@
 						<div id="graph{{$index}}" class="graph">
 							<script>graphs.push({e: "#graph{{$index}}", dataset: {{.Count.Recent}}});</script>
 						</div>
-						<small>Incoming requests last 48 hours</small>
+						<small class="graph-footer">Incoming requests last 48 hours</small>
 					</div>
 				{{else}}
 					No hooks configured yet.

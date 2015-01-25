@@ -71,6 +71,10 @@ h2.hook a {
 	fill: #52af56;
 }
 
+.graph-footer {
+	color: #777;
+}
+
 .component-arrow {
 	color: #eee;
 	font-size: 4em;
