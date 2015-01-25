@@ -19,7 +19,7 @@
 				</div>
 
 				{{range .Hook.Components}}
-				<form action="/hooks/edit/{{$.Hook.ID}}/update" method="POST">
+				<form action="/hooks/edit/{{$.Hook.ID}}/update/{{.ID}}" method="POST">
 					<div class="well well-component">
 						<h4>
 							{{$c := index $.Components .Name}}{{$c.Name}}
