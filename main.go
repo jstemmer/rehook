@@ -19,8 +19,9 @@ const (
 
 // flags
 var (
-	listenAddr = flag.String("http", ":9000", "HTTP listen address")
-	adminAddr  = flag.String("admin", ":9001", "HTTP listen address for admin interface")
+	listenAddr = flag.String("http", ":9000", "Public HTTP listen address for incoming webhooks")
+	adminAddr  = flag.String("admin", ":9001", "Private HTTP listen address for admin interface")
+	database   = flag.String("db", "data.db", "Database file to use")
 )
 
 // Database constants
@@ -31,8 +32,10 @@ var (
 )
 
 func main() {
+	flag.Parse()
+
 	// initialize database
-	db, err := bolt.Open("data.db", 0600, &bolt.Options{Timeout: 1 * time.Second})
+	db, err := bolt.Open(*database, 0600, &bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {
 		log.Fatalf("Could not open database: %s", err)
 	}
