@@ -19,6 +19,12 @@ func (LogAction) Name() string { return "Log" }
 // Template returns the HTML template name of this component.
 func (LogAction) Template() string { return "" }
 
+// Params returns the currently stored configuration parameters for hook h
+// from bucket b.
+func (LogAction) Params(h Hook, b *bolt.Bucket) map[string]string {
+	return nil
+}
+
 // Init initializes this component.
 func (LogAction) Init(h Hook, params map[string]string, b *bolt.Bucket) error {
 	return nil

@@ -92,7 +92,12 @@ func (h AdminHandler) AddComponent(w http.ResponseWriter, r *http.Request, p htt
 		h.CreateComponent(w, r, p)
 		return
 	}
-	render(fmt.Sprintf("components/%s", tpl), w, hook)
+	data := struct {
+		ID     string
+		Hook   *Hook
+		Params map[string]string
+	}{"", hook, map[string]string{"interval": ""}}
+	render(fmt.Sprintf("components/%s", tpl), w, data)
 }
 
 // CreateComponent adds a new instance of the selected component to the current
@@ -104,14 +109,7 @@ func (h AdminHandler) CreateComponent(w http.ResponseWriter, r *http.Request, p 
 		return
 	}
 
-	r.ParseForm()
-
-	params := make(map[string]string)
-	for k := range r.Form {
-		if strings.HasPrefix(k, "param-") {
-			params[k[6:]] = r.FormValue(k)
-		}
-	}
+	params := filterParams(r)
 
 	if err := h.hooks.AddComponent(*hook, r.FormValue("c"), params); err != nil {
 		// TODO: show flash message
@@ -120,10 +118,54 @@ func (h AdminHandler) CreateComponent(w http.ResponseWriter, r *http.Request, p 
 	http.Redirect(w, r, fmt.Sprintf("/hooks/edit/%s", hook.ID), http.StatusSeeOther)
 }
 
+func filterParams(r *http.Request) map[string]string {
+	r.ParseForm()
+	params := make(map[string]string)
+	for k := range r.Form {
+		if strings.HasPrefix(k, "param-") {
+			params[k[6:]] = r.FormValue(k)
+		}
+	}
+	return params
+}
+
 // EditComponent renders the component configuration page.
 func (h AdminHandler) EditComponent(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	// TODO: implement this
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	hook, err := h.hooks.Find(p.ByName("id"))
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	var cid string
+	var c Component
+	id := p.ByName("c")
+	for _, hc := range hook.Components {
+		if hc.ID == id {
+			cid = hc.Name
+			c = components[hc.Name]
+			break
+		}
+	}
+
+	if c == nil || c.Template() == "" {
+		http.Redirect(w, r, fmt.Sprintf("/hooks/edit/%s", hook.ID), http.StatusSeeOther)
+		return
+	}
+
+	params, err := h.hooks.ComponentParams(*hook, cid)
+	if err != nil {
+		log.Printf("error: %s", err)
+		http.Redirect(w, r, fmt.Sprintf("/hooks/edit/%s", hook.ID), http.StatusSeeOther)
+		return
+	}
+
+	data := struct {
+		ID     string
+		Hook   *Hook
+		Params map[string]string
+	}{id, hook, params}
+	render(fmt.Sprintf("components/%s", c.Template()), w, data)
 }
 
 // UpdateComponent handles updates to a component instance. This includes
@@ -149,6 +191,10 @@ func (h AdminHandler) UpdateComponent(w http.ResponseWriter, r *http.Request, p 
 		// TODO: implement this
 	default:
 		// TODO: POST from edit page; update params
+		params := filterParams(r)
+		if err := h.hooks.UpdateComponent(*hook, id, params); err != nil {
+			log.Printf("error updating component: %s", err)
+		}
 	}
 
 	http.Redirect(w, r, fmt.Sprintf("/hooks/edit/%s", hook.ID), http.StatusSeeOther)

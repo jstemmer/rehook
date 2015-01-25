@@ -53,6 +53,10 @@ type Component interface {
 	// component. An empty string indicates no configuration is needed.
 	Template() string
 
+	// Params returns the currently stored configuration parameters for hook h
+	// from bucket b.
+	Params(h Hook, b *bolt.Bucket) map[string]string
+
 	// Init is called when this component is added to a hook. Params contains a
 	// map of user configured settings. If this component could not be
 	// initialized, a descriptive error should be returned. The bucket b can be

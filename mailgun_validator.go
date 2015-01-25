@@ -26,6 +26,16 @@ func (MailgunValidator) Name() string { return "Mailgun validator" }
 // Template returns the HTML template name of this component.
 func (MailgunValidator) Template() string { return "mailgun-validator" }
 
+// Params returns the currently stored configuration parameters for hook h
+// from bucket b.
+func (MailgunValidator) Params(h Hook, b *bolt.Bucket) map[string]string {
+	m := make(map[string]string)
+	for _, k := range []string{"apikey"} {
+		m[k] = string(b.Get([]byte(fmt.Sprintf("%s-%s", h.ID, k))))
+	}
+	return m
+}
+
 // Init initializes this component. It requires a Mailgun API key to be
 // present.
 func (MailgunValidator) Init(h Hook, params map[string]string, b *bolt.Bucket) error {

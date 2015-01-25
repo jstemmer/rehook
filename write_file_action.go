@@ -24,6 +24,12 @@ func (WriteFileAction) Name() string { return "Write to file" }
 // Template returns the HTML template name of this component.
 func (WriteFileAction) Template() string { return "" }
 
+// Params returns the currently stored configuration parameters for hook h
+// from bucket b.
+func (WriteFileAction) Params(h Hook, b *bolt.Bucket) map[string]string {
+	return nil
+}
+
 // Init initializes this component.
 func (WriteFileAction) Init(h Hook, params map[string]string, b *bolt.Bucket) error {
 	return nil

@@ -23,6 +23,16 @@ func (RateLimitFilter) Name() string { return "Rate limiter" }
 // Template returns the HTML template name of this component.
 func (RateLimitFilter) Template() string { return "rate-limit-filter" }
 
+// Params returns the currently stored configuration parameters for hook h
+// from bucket b.
+func (RateLimitFilter) Params(h Hook, b *bolt.Bucket) map[string]string {
+	m := make(map[string]string)
+	for _, k := range []string{"amount", "interval"} {
+		m[k] = string(b.Get([]byte(fmt.Sprintf("%s-%s", h.ID, k))))
+	}
+	return m
+}
+
 // Init initializes this component. It requires an amount and an interval in
 // seconds to be present.
 func (RateLimitFilter) Init(h Hook, params map[string]string, b *bolt.Bucket) error {

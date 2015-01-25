@@ -3,19 +3,19 @@
 <div class="row">
 	<div class="col-md-6 col-md-offset-3">
 		<div class="panel-body header">
-			<h1>{{.ID}} <small>Github validator</small></h1>
+			<h1>{{.Hook.ID}} <small>Github validator</small></h1>
 		</div>
 		<div class="panel panel-default">
 			<div class="panel-body">
-				<form action="/hooks/edit/{{.ID}}/create" method="POST">
+				<form action="/hooks/edit/{{.Hook.ID}}/{{if .ID}}update/{{.ID}}{{else}}create{{end}}" method="POST">
 					<div class="form-group">
 						<label for="param-secret">Secret</label>
-						<input type="text" name="param-secret" class="form-control" autofocus>
+						<input type="text" name="param-secret" class="form-control" value="{{.Params.secret}}" autofocus>
 					</div>
 					<div class="form-group pull-right">
 						<input type="hidden" name="c" value="github-validator">
-						<a href="/hooks/edit/{{.ID}}">Cancel</a><span style="margin: 0 0.5em;">or</span>
-						<button type="submit" class="btn btn-success">Create</button>
+						<a href="/hooks/edit/{{.Hook.ID}}">Cancel</a><span style="margin: 0 0.5em;">or</span>
+						<button type="submit" class="btn btn-success">Save</button>
 					</div>
 				</form>
 			</div>

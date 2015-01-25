@@ -25,6 +25,16 @@ func (ForwardRequestAction) Name() string { return "Forward request" }
 // Template returns the HTML template name of this component.
 func (ForwardRequestAction) Template() string { return "request-forward-action" }
 
+// Params returns the currently stored configuration parameters for hook h
+// from bucket b.
+func (ForwardRequestAction) Params(h Hook, b *bolt.Bucket) map[string]string {
+	m := make(map[string]string)
+	for _, k := range []string{"url"} {
+		m[k] = string(b.Get([]byte(fmt.Sprintf("%s-%s", h.ID, k))))
+	}
+	return m
+}
+
 // Init initializes this component. It requires a valid url parameter to be
 // present.
 func (ForwardRequestAction) Init(h Hook, params map[string]string, b *bolt.Bucket) error {

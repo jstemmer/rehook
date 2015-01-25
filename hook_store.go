@@ -170,7 +170,7 @@ func gobDecode(p []byte, v interface{}) error {
 func (s *HookStore) AddComponent(h Hook, c string, params map[string]string) error {
 	cmp, ok := components[c]
 	if !ok {
-		return fmt.Errorf("Unknown component %s", c)
+		return fmt.Errorf("unknown components %s", c)
 	}
 
 	return s.db.Update(func(tx *bolt.Tx) error {
@@ -216,4 +216,39 @@ func (s *HookStore) DeleteComponent(h Hook, id string) error {
 		}
 		return b.Put([]byte(h.ID), v)
 	})
+}
+
+// UpdateComponent reinitializes component c in hook h with params.
+func (s *HookStore) UpdateComponent(h Hook, c string, params map[string]string) error {
+	cmp, ok := components[c]
+	if !ok {
+		return fmt.Errorf("unknown components %s", c)
+	}
+
+	return s.db.Update(func(tx *bolt.Tx) error {
+		// each component gets their own bucket for storage
+		cb, err := tx.Bucket(BucketComponents).CreateBucketIfNotExists([]byte(c))
+		if err != nil {
+			return err
+		}
+
+		return cmp.Init(h, params, cb)
+	})
+}
+
+// ComponentParams returns the stored params for component c id for hook h.
+func (s *HookStore) ComponentParams(h Hook, c string) (map[string]string, error) {
+	cmp, ok := components[c]
+	if !ok {
+		return nil, errors.New("invalid component")
+	}
+
+	var params map[string]string
+	err := s.db.View(func(tx *bolt.Tx) error {
+		if b := tx.Bucket(BucketComponents).Bucket([]byte(c)); b != nil {
+			params = cmp.Params(h, b)
+		}
+		return nil
+	})
+	return params, err
 }

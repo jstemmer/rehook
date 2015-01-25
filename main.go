@@ -69,8 +69,8 @@ func main() {
 
 	arouter.GET("/hooks/edit/:id/add", ah.AddComponent)
 	arouter.POST("/hooks/edit/:id/create", ah.CreateComponent)
-	arouter.POST("/hooks/edit/:id/edit/:c", ah.EditComponent)
-	arouter.POST("/hooks/edit/:id/update", ah.UpdateComponent)
+	arouter.GET("/hooks/edit/:id/edit/:c", ah.EditComponent)
+	arouter.POST("/hooks/edit/:id/update/:c", ah.UpdateComponent)
 
 	log.Printf("Admin interface on %s", *adminAddr)
 	log.Print(http.ListenAndServe(*adminAddr, arouter))

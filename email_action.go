@@ -28,6 +28,16 @@ func (EmailAction) Name() string { return "Send email (using Mailgun)" }
 // Template returns the HTML template name of this component.
 func (EmailAction) Template() string { return "email-action" }
 
+// Params returns the currently stored configuration parameters for hook h
+// from bucket b.
+func (EmailAction) Params(h Hook, b *bolt.Bucket) map[string]string {
+	m := make(map[string]string)
+	for _, k := range []string{"token", "domain", "address", "subject", "template"} {
+		m[k] = string(b.Get([]byte(fmt.Sprintf("%s-%s", h.ID, k))))
+	}
+	return m
+}
+
 // Init initializes this component. It requires a Mailgun token, a valid
 // address and template parameter to be present.
 func (EmailAction) Init(h Hook, params map[string]string, b *bolt.Bucket) error {

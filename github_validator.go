@@ -26,6 +26,16 @@ func (GithubValidator) Name() string { return "Github validator" }
 // Template returns the HTML template name of this component.
 func (GithubValidator) Template() string { return "github-validator" }
 
+// Params returns the currently stored configuration parameters for hook h
+// from bucket b.
+func (GithubValidator) Params(h Hook, b *bolt.Bucket) map[string]string {
+	m := make(map[string]string)
+	for _, k := range []string{"secret"} {
+		m[k] = string(b.Get([]byte(fmt.Sprintf("%s-%s", h.ID, k))))
+	}
+	return m
+}
+
 // Init initializes this component. It requires a secret to be present.
 func (GithubValidator) Init(h Hook, params map[string]string, b *bolt.Bucket) error {
 	secret, ok := params["secret"]
