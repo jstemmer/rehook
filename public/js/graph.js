@@ -20,6 +20,7 @@ function draw_graph(e, dataset) {
 
 	var axis = d3.svg
 		.axis()
+		.tickFormat(function(d){ return d + "h ago"; })
 		.scale(scaleX);
 
 	var axisY = d3.svg
