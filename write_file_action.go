@@ -44,6 +44,10 @@ func (WriteFileAction) Process(h Hook, r Request, b *bolt.Bucket) error {
 	}
 
 	now := time.Now()
+	if err := os.Mkdir("log", os.ModeDir); err != nil && !os.IsExist(err) {
+		return fmt.Errorf("could not create log directory: %s", err)
+	}
+
 	filename := fmt.Sprintf("log/hook_%s_%s_%s.log", h.ID, now.Format("2006-01-02_15-04-05"), hex.EncodeToString(buf))
 
 	f, err := os.Create(filename)
