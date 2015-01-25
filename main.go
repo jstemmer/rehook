@@ -12,6 +12,11 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+const (
+	// UserAgent header to use for outgoing HTTP requests
+	UserAgent = "rehook/v0.0.1 (https://github.com/gophergala/rehook)"
+)
+
 // flags
 var (
 	listenAddr = flag.String("http", ":9000", "HTTP listen address")

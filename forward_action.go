@@ -65,7 +65,7 @@ func (ForwardRequestAction) Process(h Hook, r Request, b *bolt.Bucket) error {
 		req.Header.Set(k, v)
 	}
 
-	req.Header.Set("User-Agent", "rehook/0.0.1 (https://github.com/gophergala/rehook)")
+	req.Header.Set("User-Agent", UserAgent)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
