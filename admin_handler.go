@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
@@ -27,16 +28,21 @@ func (h AdminHandler) Index(w http.ResponseWriter, r *http.Request, _ httprouter
 
 // NewHook renders the new hook form.
 func (h AdminHandler) NewHook(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	render("hooks/new", w, nil)
+	data := struct {
+		ID  string
+		Err string
+	}{r.URL.Query().Get("id"), r.URL.Query().Get("err")}
+	render("hooks/new", w, data)
 }
 
 // CreateHook handles POST requests from the new hook form.
 func (h AdminHandler) CreateHook(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	hook := Hook{ID: r.FormValue("id")}
+	id := r.FormValue("id")
+	hook := Hook{ID: id}
 	if err := h.hooks.Create(hook); err != nil {
-		// TODO: show flash message instead
 		log.Printf("error creating hook: %s", err)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		// TODO: maybe use sessions for flash messages etc
+		http.Redirect(w, r, fmt.Sprintf("/hooks/new?id=%s&err=%s", url.QueryEscape(id), url.QueryEscape(err.Error())), http.StatusSeeOther)
 		return
 	}
 	http.Redirect(w, r, fmt.Sprintf("/hooks/edit/%s", hook.ID), http.StatusSeeOther)
