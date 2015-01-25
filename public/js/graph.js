@@ -7,7 +7,7 @@ function draw_graph(e, dataset) {
 
 	var scaleY = d3.scale.linear()
 		.domain([0, d3.max(dataset)])
-		.range([0, h]);
+		.range([0, h-padding]);
 
 	var scaleX = d3.scale.linear()
 		.domain([48, 0]).range([padding/2, w-(padding)]);
