@@ -6,6 +6,7 @@ body {
 
 .navbar-default {
 	background-color: #d5e9fe;
+	box-shadow: 0px 2px 2px #e4e4e4;
 }
 
 .navbar-default .navbar-brand {
