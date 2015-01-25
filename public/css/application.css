@@ -15,6 +15,16 @@ body {
 	font-size: 150%;
 }
 
+.navbar-brand span {
+	margin-left: 46px;
+}
+
+.logo {
+	max-width: 32px;
+	position: absolute;
+	top: 10px;
+}
+
 h1 {
 	color: #a4abb1;
 	font-size: 220%;
