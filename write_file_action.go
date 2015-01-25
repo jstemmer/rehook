@@ -48,6 +48,6 @@ func (WriteFileAction) Process(h Hook, r Request, b *bolt.Bucket) error {
 	for k, v := range r.Headers {
 		fmt.Fprintf(f, "%s = %s\n", k, v)
 	}
-	fmt.Fprintf(f, "\nBody:\n%v", r.Body)
+	fmt.Fprintf(f, "\nBody:\n%s", r.Body)
 	return err
 }
