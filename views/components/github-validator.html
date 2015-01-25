@@ -2,7 +2,9 @@
 
 <div class="row">
 	<div class="col-md-6 col-md-offset-3">
-		<h1>{{.ID}} <small>Github validator</small></h1>
+		<div class="panel-body header">
+			<h1>{{.ID}} <small>Github validator</small></h1>
+		</div>
 		<div class="panel panel-default">
 			<div class="panel-body">
 				<form action="/hooks/edit/{{.ID}}/create" method="POST">
@@ -13,6 +15,7 @@
 					<div class="form-group">
 						<input type="hidden" name="c" value="github-validator">
 						<button type="submit" class="btn btn-primary">Create</button>
+						<a href="/hooks/edit/{{.ID}}">cancel</a>
 					</div>
 				</form>
 			</div>

@@ -3,7 +3,7 @@ var graphs = []
 function draw_graph(e, dataset) {
 	var w = parseInt(d3.select(e).style('width'), 10);
 	var h = 70;
-	var padding = 20;
+	var padding = 22;
 
 	var scaleY = d3.scale.linear()
 		.domain([0, d3.max(dataset)])
@@ -34,7 +34,7 @@ function draw_graph(e, dataset) {
 		.attr("x", function(d, i) {
 			return w-scaleX(i);
 		})
-		.attr("y", h - padding)
+		.attr("y", h - padding - 2)
 		.attr("width", w / dataset.length - 2)
 		.attr("height", 0);
 
@@ -44,7 +44,7 @@ function draw_graph(e, dataset) {
 			return (dataset.length - i) * 20;
 		})
 		.duration(500)
-		.attr("y", function(d) { return (h - padding)-scaleY(d); })
+		.attr("y", function(d) { return (h - padding)-scaleY(d) - 2; })
 		.attr("height", function(d) {
 			return scaleY(d);
 		});

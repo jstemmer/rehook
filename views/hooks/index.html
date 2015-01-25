@@ -4,16 +4,26 @@
 
 <div class="row">
 	<div class="col-lg-8 col-lg-offset-2">
-		<h1>Hooks</h1>
+		<div class="panel-body header">
+			<h1>Hooks
+			<a href="/hooks/new" class="btn btn-default pull-right">Create new hook</a>
+			</h1>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-8 col-lg-offset-2">
 		<div class="panel panel-default">
 			<div class="panel-body">
-				<p>
-					<a href="/hooks/new" class="btn btn-default pull-right">Create new hook</a>
-				</p>
 
 				{{range $index, $element := .}}
+					{{if gt $index 0}}<hr>{{end}}
 					<div>
-						<h2><a href="/hooks/edit/{{.ID}}">{{.ID}}</a> <small>({{.Count.Total}})</small></h2>
+						<h2 class="hook">
+							<a href="/hooks/edit/{{.ID}}">{{.ID}}</a>
+							<span class="info">{{.Count.Total}} <small>total requests</small></span>
+						</h2>
 						<div id="graph{{$index}}" class="graph">
 							<script>graphs.push({e: "#graph{{$index}}", dataset: {{.Count.Recent}}});</script>
 						</div>

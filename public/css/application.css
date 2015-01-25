@@ -1,12 +1,53 @@
 body {
 	font-family: 'Open Sans', sans-serif;
-	background-color: #eff3f8;
+	background-color: #f3f3f3;
 	padding-top: 70px;
+}
+
+.navbar-default {
+	background-color: #d5e9fe;
+}
+
+.navbar-default .navbar-brand {
+	color: #414042;
+	font-weight: 600;
+	font-size: 150%;
+}
+
+h1 {
+	color: #a4abb1;
+	font-size: 220%;
+	font-weight: 600;
+}
+
+.header {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+a {
+	color: #41a3fe;
+}
+
+h2.hook a {
+	font-weight: 600;
+	font-size: 100%;
+}
+
+.hook .info {
+	color: #63c976;
+	font-size: 70%;
+	margin-left: 1em;
+}
+
+.hook .info small {
+	font-size: 70%;
 }
 
 .axis path {
 	fill: none;
-	stroke: black;
+	stroke: #cbcfdc;
+	stroke-width: 1.5px;
 	shape-rendering: crispEdges;
 }
 
@@ -20,6 +61,14 @@ body {
 	width: 100%;
 	height: 80px;
 	padding: 0.5em 0;
+}
+
+.graph rect {
+	fill: #63c976;
+}
+
+.graph rect:hover {
+	fill: #52af56;
 }
 
 .component-arrow {
