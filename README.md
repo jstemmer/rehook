@@ -7,8 +7,6 @@ services and acting on them.
 
 Initial version created during the [Gopher Gala](http://gophergala.com).
 
-[![Build Status](https://travis-ci.org/gophergala/rehook.svg?branch=master)](https://travis-ci.org/gophergala/rehook)
-
 ## About
 
 External web services often provide webhooks as an alternative to polling their
