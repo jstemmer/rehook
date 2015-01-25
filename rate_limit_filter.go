@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"log"
 	"strconv"
 	"time"
 
@@ -69,7 +68,6 @@ func (RateLimitFilter) Process(h Hook, r Request, b *bolt.Bucket) error {
 	// store current timestamp
 	now := time.Now()
 	k := []byte(fmt.Sprintf("%d", now.UnixNano()))
-	log.Printf("storing %s", string(k))
 	if err := b.Put(k, nil); err != nil {
 		return err
 	}
@@ -78,11 +76,8 @@ func (RateLimitFilter) Process(h Hook, r Request, b *bolt.Bucket) error {
 	c := b.Cursor()
 	from := []byte(fmt.Sprintf("%d", now.Add(time.Duration(-interval)*time.Second).UnixNano()))
 
-	log.Printf("from: %s", string(from))
-
 	var count int
 	for k, _ := c.Seek(from); k != nil; k, _ = c.Next() {
-		log.Printf("counting %s", string(k))
 		count++
 	}
 
@@ -92,7 +87,6 @@ func (RateLimitFilter) Process(h Hook, r Request, b *bolt.Bucket) error {
 
 	// cleanup old entries
 	for k, _ := c.First(); k != nil && bytes.Compare(k, from) <= 0; k, _ = c.Next() {
-		log.Printf("deleting %s", string(k))
 		if err := b.Delete(k); err != nil {
 			return err
 		}
