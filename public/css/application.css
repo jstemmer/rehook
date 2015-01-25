@@ -91,7 +91,10 @@ h2.hook a {
 .component-arrow {
 	color: #eee;
 	font-size: 4em;
-	margin: -10px 0 0 0;
+}
+
+.component-arrow img {
+	width: 72px;
 }
 
 hr {
@@ -131,6 +134,16 @@ hr {
 	border: 0;
 	background-color: transparent;
 	box-shadow: none;
+	margin-bottom: -20px;
+	padding: 10px;
+}
+
+.well-component {
+	border: 0;
+	border-left: 6px solid #eee;
+	box-shadow: none;
+	border-radius: 0;
+	margin-bottom: 0;
 }
 
 .well-dashed {

@@ -13,27 +13,29 @@
 					pass through.
 				</p>
 
-				<div class="well well-hidden text-center">Request</div>
-				<div class="text-center component-arrow">
-					<span class="glyphicon glyphicon-arrow-down"></span>
+				<div class="well well-hidden text-center"><h4>Request</h4></div>
+				<div class="component-arrow text-center">
+					<img src="/public/images/arrow-down.svg">
 				</div>
 
 				{{range .Hook.Components}}
 				<form action="/hooks/edit/{{$.Hook.ID}}/update" method="POST">
-					<div class="well">
-						{{$c := index $.Components .Name}}{{$c.Name}}
-						<div class="btn-group pull-right">
-							<a href="/hooks/edit/{{$.Hook.ID}}/edit/{{.ID}}" class="btn btn-default btn-xs">edit</a>
-							<button type="submit" name="action" value="move-up" class="btn btn-default btn-xs">move up</button>
-							<button type="submit" name="action" value="move-down" class="btn btn-default btn-xs">move down</button>
-							<button type="submit" name="action" value="delete" class="btn btn-default btn-xs">delete</button>
-						</div>
-						<div class="clearfix"></div>
-						<input type="hidden" name="c" value="{{.ID}}">
+					<div class="well well-component">
+						<h4>
+							{{$c := index $.Components .Name}}{{$c.Name}}
+							<div class="btn-group pull-right">
+								<a href="/hooks/edit/{{$.Hook.ID}}/edit/{{.ID}}" class="btn btn-default btn-xs">edit</a>
+								<button type="submit" name="action" value="move-up" class="btn btn-default btn-xs">move up</button>
+								<button type="submit" name="action" value="move-down" class="btn btn-default btn-xs">move down</button>
+								<button type="submit" name="action" value="delete" class="btn btn-default btn-xs">delete</button>
+							</div>
+							<div class="clearfix"></div>
+							<input type="hidden" name="c" value="{{.ID}}">
+						</h4>
 					</div>
 				</form>
-				<div class="text-center component-arrow">
-					<span class="glyphicon glyphicon-arrow-down"></span>
+				<div class="component-arrow text-center">
+					<img src="/public/images/arrow-down.svg">
 				</div>
 				{{end}}
 
