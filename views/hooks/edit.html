@@ -21,7 +21,7 @@
 				{{range .Hook.Components}}
 				<form action="/hooks/edit/{{$.Hook.ID}}/update" method="POST">
 					<div class="well">
-						{{.Name}}
+						{{$c := index $.Components .Name}}{{$c.Name}}
 						<div class="btn-group pull-right">
 							<a href="/hooks/edit/{{$.Hook.ID}}/edit/{{.ID}}" class="btn btn-default btn-xs">edit</a>
 							<button type="submit" name="action" value="move-up" class="btn btn-default btn-xs">move up</button>
