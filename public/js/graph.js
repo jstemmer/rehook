@@ -10,7 +10,7 @@ function draw_graph(e, dataset) {
 		.range([0, h]);
 
 	var scaleX = d3.scale.linear()
-		.domain([48, 0]).range([padding/2, w-(padding/2)]);
+		.domain([48, 0]).range([padding/2, w-(padding)]);
 
 	d3.select(e).select("svg").remove();
 	var svg = d3.select(e)
@@ -22,10 +22,28 @@ function draw_graph(e, dataset) {
 		.axis()
 		.scale(scaleX);
 
+	var axisY = d3.svg
+		.axis()
+		.scale(d3.scale.linear().domain([0, d3.max(dataset)]).range([h, 0]))
+		.ticks(3)
+		.orient("left");
+
+	var tip = d3.tip()
+		.attr('class', 'd3-tip')
+		.offset([-10,0])
+		.html(function(d) { return d; });
+
+	svg.call(tip);
+
 	svg.append("g")
 		.attr("class", "axis")
-		.attr("transform", "translate(0," + (h-padding) + ")")
+		.attr("transform", "translate(20," + (h-padding) + ")")
 		.call(axis);
+
+	svg.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(31, -" + padding + ")")
+		.call(axisY);
 
 	svg.selectAll("rect")
 		.data(dataset)
@@ -36,7 +54,9 @@ function draw_graph(e, dataset) {
 		})
 		.attr("y", h - padding - 2)
 		.attr("width", w / dataset.length - 2)
-		.attr("height", 0);
+		.attr("height", 0)
+		.on('mouseover', tip.show)
+		.on('mouseout', tip.hide);
 
 	svg.selectAll("rect")
 		.transition()
