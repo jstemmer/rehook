@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"crypto/hmac"
 	"crypto/sha1"
+	"encoding/hex"
 	"errors"
 	"fmt"
 
@@ -40,8 +42,8 @@ func (GithubValidator) Process(h Hook, r Request, b *bolt.Bucket) error {
 	signature := []byte(r.Headers["X-Hub-Signature"])
 
 	mac := hmac.New(sha1.New, secret)
-	mac.Write(r.Body)
-	expected := append([]byte("sha1="), mac.Sum(nil)...)
+	mac.Write(bytes.TrimSpace(r.Body))
+	expected := append([]byte("sha1="), hex.EncodeToString(mac.Sum(nil))...)
 	if !hmac.Equal(signature, expected) {
 		return errors.New("invalid signature")
 	}
