@@ -1,5 +1,7 @@
+var graphs = []
+
 function draw_graph(e, dataset) {
-	var w = 500;
+	var w = parseInt(d3.select(e).style('width'), 10);
 	var h = 70;
 	var padding = 20;
 
@@ -10,6 +12,7 @@ function draw_graph(e, dataset) {
 	var scaleX = d3.scale.linear()
 		.domain([48, 0]).range([padding/2, w-(padding/2)]);
 
+	d3.select(e).select("svg").remove();
 	var svg = d3.select(e)
 		.append("svg")
 		.attr("width", w)
@@ -45,4 +48,13 @@ function draw_graph(e, dataset) {
 		.attr("height", function(d) {
 			return scaleY(d);
 		});
+
 }
+
+function draw_graphs() {
+	for (var i=0; i<graphs.length; i++) {
+		draw_graph(graphs[i].e, graphs[i].dataset);
+	}
+}
+
+d3.select(window).on('resize', draw_graphs);

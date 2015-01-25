@@ -14,19 +14,19 @@
 				{{range $index, $element := .}}
 					<div>
 						<h2><a href="/hooks/edit/{{.ID}}">{{.ID}}</a> <small>({{.Count.Total}})</small></h2>
-
 						<div id="graph{{$index}}" class="graph">
+							<script>graphs.push({e: "#graph{{$index}}", dataset: {{.Count.Recent}}});</script>
 						</div>
 						<small>Incoming requests last 48 hours</small>
-						<script>draw_graph("#graph{{$index}}", {{.Count.Recent}})</script>
 					</div>
 				{{else}}
 					No hooks configured yet.
 				{{end}}
 			</div>
 		</div>
-
 	</div>
 </div>
+
+<script>draw_graphs();</script>
 
 {{end}}
