@@ -165,6 +165,8 @@ func gobDecode(p []byte, v interface{}) error {
 	return gob.NewDecoder(bytes.NewBuffer(p)).Decode(v)
 }
 
+// AddComponent adds component c to hook h, initializing it with the given
+// params.
 func (s *HookStore) AddComponent(h Hook, c string, params map[string]string) error {
 	cmp, ok := components[c]
 	if !ok {
@@ -196,6 +198,7 @@ func (s *HookStore) AddComponent(h Hook, c string, params map[string]string) err
 	})
 }
 
+// DeleteComponent deletes component identified by id from hook h.
 func (s *HookStore) DeleteComponent(h Hook, id string) error {
 	return s.db.Update(func(tx *bolt.Tx) error {
 		hc := h.Components

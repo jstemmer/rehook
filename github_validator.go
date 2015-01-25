@@ -15,12 +15,18 @@ func init() {
 	RegisterComponent("github-validator", GithubValidator{})
 }
 
+// GithubValidator checks if the signature for an incoming request matches the
+// calculated HMAC of the request body. It also checks if the unique identifier
+// hasn't been processed before to prevent replay attacks.
 type GithubValidator struct{}
 
+// Name returns the name of this component.
 func (GithubValidator) Name() string { return "Github validator" }
 
+// Template returns the HTML template name of this component.
 func (GithubValidator) Template() string { return "github-validator" }
 
+// Init initializes this component. It requires a secret to be present.
 func (GithubValidator) Init(h Hook, params map[string]string, b *bolt.Bucket) error {
 	secret, ok := params["secret"]
 	if !ok {
@@ -33,6 +39,7 @@ func (GithubValidator) Init(h Hook, params map[string]string, b *bolt.Bucket) er
 	return err
 }
 
+// Process verifies the signature and uniqueness of the delivery identifier.
 func (GithubValidator) Process(h Hook, r Request, b *bolt.Bucket) error {
 	// Check HMAC
 	secret := b.Get([]byte(fmt.Sprintf("%s-secret", h.ID)))

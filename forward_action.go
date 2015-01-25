@@ -13,13 +13,19 @@ func init() {
 	RegisterComponent("forward-request-action", ForwardRequestAction{})
 }
 
+// ForwardRequestAction is a component that forwards an incoming request to a
+// user defined URL.
 type ForwardRequestAction struct {
 }
 
+// Name returns the name of this component.
 func (ForwardRequestAction) Name() string { return "Forward request" }
 
+// Template returns the HTML template name of this component.
 func (ForwardRequestAction) Template() string { return "request-forward-action" }
 
+// Init initializes this component. It requires a valid url parameter to be
+// present.
 func (ForwardRequestAction) Init(h Hook, params map[string]string, b *bolt.Bucket) error {
 	uri, ok := params["url"]
 	if !ok {
@@ -33,6 +39,7 @@ func (ForwardRequestAction) Init(h Hook, params map[string]string, b *bolt.Bucke
 	return b.Put([]byte(fmt.Sprintf("%s-url", h.ID)), []byte(uri))
 }
 
+// Process forwards the incoming request to the configured URL.
 func (ForwardRequestAction) Process(h Hook, r Request, b *bolt.Bucket) error {
 	uri := b.Get([]byte(fmt.Sprintf("%s-url", h.ID)))
 	if uri == nil {

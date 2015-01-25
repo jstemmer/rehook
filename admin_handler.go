@@ -71,6 +71,8 @@ func (h AdminHandler) UpdateHook(w http.ResponseWriter, r *http.Request, p httpr
 	}
 }
 
+// AddComponent renders the component configuration screen, if it has one, or
+// directly redirects to h.CreateComponent.
 func (h AdminHandler) AddComponent(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	hook, err := h.hooks.Find(p.ByName("id"))
 	if err != nil {
@@ -93,6 +95,8 @@ func (h AdminHandler) AddComponent(w http.ResponseWriter, r *http.Request, p htt
 	render(fmt.Sprintf("components/%s", tpl), w, hook)
 }
 
+// CreateComponent adds a new instance of the selected component to the current
+// hook.
 func (h AdminHandler) CreateComponent(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	hook, err := h.hooks.Find(p.ByName("id"))
 	if err != nil {
@@ -116,11 +120,14 @@ func (h AdminHandler) CreateComponent(w http.ResponseWriter, r *http.Request, p 
 	http.Redirect(w, r, fmt.Sprintf("/hooks/edit/%s", hook.ID), http.StatusSeeOther)
 }
 
+// EditComponent renders the component configuration page.
 func (h AdminHandler) EditComponent(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// TODO: implement this
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
+// UpdateComponent handles updates to a component instance. This includes
+// moving the processing order or deleting the component.
 func (h AdminHandler) UpdateComponent(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	hook, err := h.hooks.Find(p.ByName("id"))
 	if err != nil {
@@ -137,9 +144,11 @@ func (h AdminHandler) UpdateComponent(w http.ResponseWriter, r *http.Request, p 
 			log.Printf("error deleting component: %s", err)
 		}
 	case "move-up":
+		// TODO: implement this
 	case "move-down":
+		// TODO: implement this
 	default:
-		// POST from edit page
+		// TODO: POST from edit page; update params
 	}
 
 	http.Redirect(w, r, fmt.Sprintf("/hooks/edit/%s", hook.ID), http.StatusSeeOther)

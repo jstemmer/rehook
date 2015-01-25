@@ -11,6 +11,8 @@ var (
 	components = make(map[string]Component)
 )
 
+// RegisterComponent registers component c with name as the unique identifier
+// for this component.
 func RegisterComponent(name string, c Component) {
 	if c == nil {
 		panic("cannot register nil component")
@@ -24,6 +26,7 @@ type HookComponent struct {
 	Name string
 }
 
+// Request represents an incoming request that may be processed by components.
 type Request struct {
 	Method  string
 	Headers map[string]string
@@ -40,6 +43,8 @@ func loadRequest(req *http.Request) (r Request, err error) {
 	return r, err
 }
 
+// Component is the interface all components must implement. Hooks may have
+// many components, each processing an incoming request.
 type Component interface {
 	// Name returns the human-friendly name of the component.
 	Name() string

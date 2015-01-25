@@ -14,19 +14,23 @@ func init() {
 	RegisterComponent("write-file-action", WriteFileAction{})
 }
 
-// WriteFile writes any incoming hook to a logfile in dir.
+// WriteFileAction writes any incoming hook to a logfile in the logs/ dir.
 type WriteFileAction struct {
 }
 
+// Name returns the name of this component.
 func (WriteFileAction) Name() string { return "Write to file" }
 
+// Template returns the HTML template name of this component.
 func (WriteFileAction) Template() string { return "" }
 
+// Init initializes this component.
 func (WriteFileAction) Init(h Hook, params map[string]string, b *bolt.Bucket) error {
 	return nil
 }
 
-// Process processes the incoming request r for hook h.
+// Process writes a new file to the logs directory containing the headers and
+// body of request r.
 func (WriteFileAction) Process(h Hook, r Request, b *bolt.Bucket) error {
 	buf := make([]byte, 8)
 	if _, err := rand.Read(buf); err != nil {
