@@ -1,12 +1,12 @@
 body {
 	font-family: 'Open Sans', sans-serif;
-	background-color: #f3f3f3;
-	padding-top: 70px;
+	background-color: #f8f8f8;
+	padding-top: 50px;
 }
 
 .navbar-default {
 	background-color: #d5e9fe;
-	box-shadow: 0px 2px 2px #e4e4e4;
+	box-shadow: 0px 2px 2px #efefef;
 }
 
 .navbar-default .navbar-brand {
