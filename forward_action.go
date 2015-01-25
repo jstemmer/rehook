@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/boltdb/bolt"
 	"net/http"
 	"net/url"
+
+	"github.com/boltdb/bolt"
 )
 
 func init() {
