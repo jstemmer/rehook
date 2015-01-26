@@ -86,7 +86,7 @@ hook identifier, for example `github`. Rehook will now accept HTTP requests on
 
 You can now add components to process incoming requests. The arrow indicates
 the order in which the request flows through the components. If a component
-cannot handle a request, it will give a reason an further processing is
+cannot handle a request, it will give a reason and further processing is
 stopped.
 
 Since this webhook will accept Github webhook requests, let's first add a
@@ -103,7 +103,7 @@ directory. Your page should now [look something like this](https://github.com/go
 Go to the Github settings page of your repository, click the `Webhooks &
 Services` button and add a new Webhook. Enter the URL where your Rehook
 instance can be reached, be sure to use `/h/github` as the path. Click `Add
-webhook` and if everything was setup correctly, your first webhook request was
+webhook` and, if everything was setup correctly, your first webhook request was
 just handled by Rehook.
 
 ## Components
