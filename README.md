@@ -5,7 +5,10 @@
 __Rehook__ - a webhook dispatcher, filtering incoming requests from external
 services and acting on them.
 
-Initial version created during the [Gopher Gala](http://gophergala.com).
+Initial version created during the [Gopher Gala](http://gophergala.com). Rehook
+finished in second place and won the Best Solo App prize. See the
+`gophergala.2015` tag in this repo for the version that was originally
+submitted.
 
 [![Build Status](https://travis-ci.org/gophergala/rehook.svg?branch=master)](https://travis-ci.org/gophergala/rehook)
 
