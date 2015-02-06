@@ -14,7 +14,7 @@ import (
 
 const (
 	// UserAgent header to use for outgoing HTTP requests
-	UserAgent = "rehook/v0.0.1 (https://github.com/gophergala/rehook)"
+	UserAgent = "rehook/v0.1.1 (https://github.com/jstemmer/rehook)"
 )
 
 // flags

@@ -1,16 +1,16 @@
 # rehook
 
-![](https://github.com/gophergala/rehook/blob/master/public/images/rehook-logo.png)
+![](https://github.com/jstemmer/rehook/blob/master/public/images/rehook-logo.png)
 
 __Rehook__ - a webhook dispatcher, filtering incoming requests from external
 services and acting on them.
 
 Initial version created during the [Gopher Gala](http://gophergala.com). Rehook
 finished in second place and won the Best Solo App prize. See the
-`gophergala.2015` tag in this repo for the version that was originally
+`gophergala.2015.entry` tag in this repo for the version that was originally
 submitted.
 
-[![Build Status](https://travis-ci.org/gophergala/rehook.svg?branch=master)](https://travis-ci.org/gophergala/rehook)
+[![Build Status](https://travis-ci.org/jstemmer/rehook.svg?branch=master)](https://travis-ci.org/jstemmer/rehook)
 
 ## About
 
@@ -33,9 +33,9 @@ hosts, storing them for later analysis or sending an email based on a template.
 It provides an easy to use web interface to configure your webhooks and to keep
 an eye on how much traffic is being handled.
 
-![](https://github.com/gophergala/rehook/blob/master/screenshots/rehook_stats.png)
+![](https://github.com/jstemmer/rehook/blob/master/screenshots/rehook_stats.png)
 
-[More screenshots](https://github.com/gophergala/rehook/tree/master/screenshots)
+[More screenshots](https://github.com/jstemmer/rehook/tree/master/screenshots)
 
 ## Building from source
 
@@ -43,10 +43,10 @@ Assuming you have installed a recent version of
 [Go](https://golang.org/doc/install), you can simply run 
 
 ```
-go get github.com/gophergala/rehook
+go get github.com/jstemmer/rehook
 ```
 
-This will download Rehook to `$GOPATH/src/github.com/gophergala/rehook`. In
+This will download Rehook to `$GOPATH/src/github.com/jstemmer/rehook`. In
 this directory run `go build` to create the `rehook` binary.
 
 ## Running
@@ -101,7 +101,7 @@ page.
 
 Let's log the request and write it to a file. Add the `Log` and `Write to file`
 components. The last one will write a file for each request in the `log/`
-directory. Your page should now [look something like this](https://github.com/gophergala/rehook/blob/master/screenshots/rehook_chain.png).
+directory. Your page should now [look something like this](https://github.com/jstemmer/rehook/blob/master/screenshots/rehook_chain.png).
 
 Go to the Github settings page of your repository, click the `Webhooks &
 Services` button and add a new Webhook. Enter the URL where your Rehook
