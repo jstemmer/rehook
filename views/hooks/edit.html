@@ -24,12 +24,12 @@
 						<h4>
 							{{$c := index $.Components .Name}}{{$c.Name}}
 							<div class="pull-right">
-								{{if $c.Template}}<a href="/hooks/edit/{{$.Hook.ID}}/edit/{{.ID}}" class="btn btn-default btn-sm" style="margin-right: 10px">Edit</a>{{end}}
+								{{if $c.Template}}<a href="/hooks/edit/{{$.Hook.ID}}/edit/{{.ID}}" class="btn btn-default btn-sm">Edit</a>{{end}}
 								{{/*
 								<button type="submit" name="action" value="move-up" class="btn btn-default btn-xs">Move up</button>
 								<button type="submit" name="action" value="move-down" class="btn btn-default btn-xs">Move down</button>
 								*/}}
-								<button type="submit" name="action" value="delete" class="btn btn-default btn-sm" style="margin-right: 10px">Delete</button>
+								<button type="submit" name="action" value="delete" class="btn btn-default btn-sm">Delete</button>
 							</div>
 							<div class="clearfix"></div>
 							<input type="hidden" name="c" value="{{.ID}}">
