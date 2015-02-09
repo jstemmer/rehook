@@ -1,44 +1,26 @@
-{{define "page"}}
+{{define "component"}}
 
-<div class="row">
-	<div class="col-md-6 col-md-offset-3">
-		<div class="panel-body header">
-			<h1>{{.Hook.ID}} <small>&gt; Send email (using Mailgun)</small></h1>
-		</div>
-		<div class="panel panel-default">
-			<div class="panel-body">
-				<form action="/hooks/edit/{{.Hook.ID}}/{{if .ID}}update/{{.ID}}{{else}}create{{end}}" method="POST">
-					<div class="form-group">
-						<label for="param-token">Mailgun API token</label>
-						<input type="text" name="param-token" class="form-control" placeholder="key-..." value="{{.Params.token}}" autofocus required>
-					</div>
-					<div class="form-group">
-						<label for="param-domain">Mailgun sending domain</label>
-						<input type="text" name="param-domain" class="form-control" placeholder="mydomain.example.net" value="{{.Params.domain}}" autofocus required>
-					</div>
-					<div class="form-group">
-						<label for="param-address">Email address</label>
-						<input type="email" name="param-address" class="form-control" placeholder="recipient@example.com" value="{{.Params.address}}" required>
-					</div>
-					<div class="form-group">
-						<label for="param-subject">Subject</label>
-						<input type="text" name="param-subject" class="form-control" placeholder="Rehook email" value="{{.Params.subject}}" required>
-					</div>
-					<div class="form-group">
-						<label for="param-template">Body template</label>
-						<textarea name="param-template" rows="8" class="form-control" required>{{if .Params.template}}{{.Params.template}}{{else}}Incoming request processed for hook {{"{{"}}.Hook.ID{{"}}"}} from user agent {{"{{"}}index .Request.Headers "User-Agent"{{"}}"}}.
-						
+<div class="form-group">
+	<label for="param-token">Mailgun API token</label>
+	<input type="text" name="param-token" class="form-control" placeholder="key-..." value="{{.Params.token}}" autofocus required>
+</div>
+<div class="form-group">
+	<label for="param-domain">Mailgun sending domain</label>
+	<input type="text" name="param-domain" class="form-control" placeholder="mydomain.example.net" value="{{.Params.domain}}" autofocus required>
+</div>
+<div class="form-group">
+	<label for="param-address">Email address</label>
+	<input type="email" name="param-address" class="form-control" placeholder="recipient@example.com" value="{{.Params.address}}" required>
+</div>
+<div class="form-group">
+	<label for="param-subject">Subject</label>
+	<input type="text" name="param-subject" class="form-control" placeholder="Rehook email" value="{{.Params.subject}}" required>
+</div>
+<div class="form-group">
+	<label for="param-template">Body template</label>
+	<textarea name="param-template" rows="8" class="form-control" required>{{if .Params.template}}{{.Params.template}}{{else}}Incoming request processed for hook {{"{{"}}.Hook.ID{{"}}"}} from user agent {{"{{"}}index .Request.Headers "User-Agent"{{"}}"}}.
+
 Sent by Rehook.{{end}}</textarea>
-					</div>
-					<div class="form-group pull-right">
-						<input type="hidden" name="c" value="email-action">
-						<a href="/hooks/edit/{{.Hook.ID}}">Cancel</a><span style="margin: 0 0.5em;">or</span>
-						<button type="submit" class="btn btn-success">Save</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
 </div>
 
 {{end}}

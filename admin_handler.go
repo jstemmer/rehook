@@ -102,9 +102,11 @@ func (h AdminHandler) AddComponent(w http.ResponseWriter, r *http.Request, p htt
 	data := struct {
 		ID     string
 		Hook   *Hook
+		CID    string
+		Name   string
 		Params map[string]string
-	}{"", hook, map[string]string{"interval": ""}}
-	render(w, data, fmt.Sprintf("components/%s", tpl))
+	}{"", hook, id, c.Name(), map[string]string{"interval": ""}}
+	render(w, data, "components/component", "components/"+tpl)
 }
 
 // CreateComponent adds a new instance of the selected component to the current
@@ -170,9 +172,11 @@ func (h AdminHandler) EditComponent(w http.ResponseWriter, r *http.Request, p ht
 	data := struct {
 		ID     string
 		Hook   *Hook
+		CID    string
+		Name   string
 		Params map[string]string
-	}{id, hook, params}
-	render(w, data, fmt.Sprintf("components/%s", c.Template()))
+	}{id, hook, id, c.Name(), params}
+	render(w, data, "components/component", "components/"+c.Template())
 }
 
 // UpdateComponent handles updates to a component instance. This includes

@@ -1,34 +1,17 @@
-{{define "page"}}
+{{define "component"}}
 
-<div class="row">
-	<div class="col-md-6 col-md-offset-3">
-		<div class="panel-body header">
-			<h1>{{.Hook.ID}} <small>&gt; Rate limit filter</small></h1>
-		</div>
-		<div class="panel panel-default">
-			<div class="panel-body">
-				<form action="/hooks/edit/{{.Hook.ID}}/{{if .ID}}update/{{.ID}}{{else}}create{{end}}" class="form-inline" method="POST">
-					<div class="form-group">
-						<label for="param-amount">Limit to</label>
-						<input type="text" name="param-amount" class="form-control" placeholder="5" size="4" value="{{.Params.amount}}" autofocus required>
-						<label for="param-interval">requests per</label>
-						<select name="param-interval" class="form-control">
-							<option value="1" {{if eq .Params.interval "1"}}selected="selected"{{end}}>second</option>
-							<option value="60" {{if eq .Params.interval "60"}}selected="selected"{{end}}>minute</option>
-							<option value="300" {{if eq .Params.interval "300"}}selected="selected"{{end}}>5 minutes</option>
-							<option value="1800" {{if eq .Params.interval "1800"}}selected="selected"{{end}}>half hour</option>
-							<option value="3600" {{if eq .Params.interval "3600"}}selected="selected"{{end}}>hour</option>
-						</select>
-					</div>
-					<br><br>
-					<div class="form-group pull-right">
-						<input type="hidden" name="c" value="rate-limit-filter">
-						<a href="/hooks/edit/{{.Hook.ID}}">Cancel</a><span style="margin: 0 0.5em;">or</span>
-						<button type="submit" class="btn btn-success">Save</button>
-					</div>
-				</form>
-			</div>
-		</div>
+<div class="form-inline">
+	<div class="form-group">
+		<label for="param-amount">Limit to</label>
+		<input type="text" name="param-amount" class="form-control" placeholder="5" size="4" value="{{.Params.amount}}" autofocus required>
+		<label for="param-interval">requests per</label>
+		<select name="param-interval" class="form-control">
+			<option value="1" {{if eq .Params.interval "1"}}selected="selected"{{end}}>second</option>
+			<option value="60" {{if eq .Params.interval "60"}}selected="selected"{{end}}>minute</option>
+			<option value="300" {{if eq .Params.interval "300"}}selected="selected"{{end}}>5 minutes</option>
+			<option value="1800" {{if eq .Params.interval "1800"}}selected="selected"{{end}}>half hour</option>
+			<option value="3600" {{if eq .Params.interval "3600"}}selected="selected"{{end}}>hour</option>
+		</select>
 	</div>
 </div>
 
