@@ -196,7 +196,6 @@ func (h AdminHandler) UpdateComponent(w http.ResponseWriter, r *http.Request, p 
 	case "move-down":
 		// TODO: implement this
 	default:
-		// TODO: POST from edit page; update params
 		params := filterParams(r)
 		if err := h.hooks.UpdateComponent(*hook, id, params); err != nil {
 			log.Printf("error updating component: %s", err)
