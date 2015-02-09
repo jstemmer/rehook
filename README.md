@@ -118,6 +118,11 @@ The following components are currently available:
 Sends an email with a custom body template to the specified address using the
 Mailgun API.
 
+### Execute command
+
+Executes a command on the local server using `sh` and logs the output to
+`stderr`.
+
 ### Forward request
 
 Forwards the request, including its headers, to the specified URL.
