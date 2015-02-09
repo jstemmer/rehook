@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"net/url"
@@ -203,4 +204,17 @@ func (h AdminHandler) UpdateComponent(w http.ResponseWriter, r *http.Request, p 
 	}
 
 	http.Redirect(w, r, fmt.Sprintf("/hooks/edit/%s", hook.ID), http.StatusSeeOther)
+}
+
+func render(name string, w http.ResponseWriter, data interface{}) {
+	t, err := template.New("layout").ParseFiles("views/layout.html", fmt.Sprintf("views/%s.html", name))
+	if err != nil {
+		log.Printf("error loading template %s: %s", name, err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+
+	if err := t.Execute(w, data); err != nil {
+		log.Printf("error rendering %s: %s", name, err)
+	}
 }

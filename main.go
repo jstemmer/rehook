@@ -2,8 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"time"
@@ -86,17 +84,4 @@ func initBuckets(t *bolt.Tx) error {
 		}
 	}
 	return nil
-}
-
-func render(name string, w http.ResponseWriter, data interface{}) {
-	t, err := template.New("layout").ParseFiles("views/layout.html", fmt.Sprintf("views/%s.html", name))
-	if err != nil {
-		log.Printf("error loading template %s: %s", name, err)
-		http.Error(w, "error", http.StatusInternalServerError)
-		return
-	}
-
-	if err := t.Execute(w, data); err != nil {
-		log.Printf("error rendering %s: %s", name, err)
-	}
 }
