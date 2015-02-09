@@ -24,7 +24,7 @@ func (h AdminHandler) Index(w http.ResponseWriter, r *http.Request, _ httprouter
 		http.Error(w, "error", http.StatusInternalServerError)
 		return
 	}
-	render("hooks/index", w, hooks)
+	render(w, hooks, "hooks/index")
 }
 
 // NewHook renders the new hook form.
@@ -33,7 +33,7 @@ func (h AdminHandler) NewHook(w http.ResponseWriter, r *http.Request, _ httprout
 		ID  string
 		Err string
 	}{r.URL.Query().Get("id"), r.URL.Query().Get("err")}
-	render("hooks/new", w, data)
+	render(w, data, "hooks/new")
 }
 
 // CreateHook handles POST requests from the new hook form.
@@ -63,7 +63,7 @@ func (h AdminHandler) EditHook(w http.ResponseWriter, r *http.Request, p httprou
 		Components map[string]Component
 	}{hook, components}
 
-	render("hooks/edit", w, data)
+	render(w, data, "hooks/edit")
 }
 
 // UpdateHook handles POST requests from the edit page.
@@ -104,7 +104,7 @@ func (h AdminHandler) AddComponent(w http.ResponseWriter, r *http.Request, p htt
 		Hook   *Hook
 		Params map[string]string
 	}{"", hook, map[string]string{"interval": ""}}
-	render(fmt.Sprintf("components/%s", tpl), w, data)
+	render(w, data, fmt.Sprintf("components/%s", tpl))
 }
 
 // CreateComponent adds a new instance of the selected component to the current
@@ -172,7 +172,7 @@ func (h AdminHandler) EditComponent(w http.ResponseWriter, r *http.Request, p ht
 		Hook   *Hook
 		Params map[string]string
 	}{id, hook, params}
-	render(fmt.Sprintf("components/%s", c.Template()), w, data)
+	render(w, data, fmt.Sprintf("components/%s", c.Template()))
 }
 
 // UpdateComponent handles updates to a component instance. This includes
@@ -206,15 +206,19 @@ func (h AdminHandler) UpdateComponent(w http.ResponseWriter, r *http.Request, p 
 	http.Redirect(w, r, fmt.Sprintf("/hooks/edit/%s", hook.ID), http.StatusSeeOther)
 }
 
-func render(name string, w http.ResponseWriter, data interface{}) {
-	t, err := template.New("layout").ParseFiles("views/layout.html", fmt.Sprintf("views/%s.html", name))
+func render(w http.ResponseWriter, data interface{}, names ...string) {
+	files := append([]string{"layout"}, names...)
+	for i := range files {
+		files[i] = fmt.Sprintf("views/%s.html", files[i])
+	}
+	t, err := template.New("layout").ParseFiles(files...)
 	if err != nil {
-		log.Printf("error loading template %s: %s", name, err)
+		log.Printf("error loading template %v: %s", names, err)
 		http.Error(w, "error", http.StatusInternalServerError)
 		return
 	}
 
 	if err := t.Execute(w, data); err != nil {
-		log.Printf("error rendering %s: %s", name, err)
+		log.Printf("error rendering %v: %s", names, err)
 	}
 }
