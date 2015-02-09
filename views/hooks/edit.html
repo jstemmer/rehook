@@ -24,7 +24,7 @@
 						<h4>
 							{{$c := index $.Components .Name}}{{$c.Name}}
 							<div class="pull-right">
-								<a href="/hooks/edit/{{$.Hook.ID}}/edit/{{.ID}}" class="btn btn-default btn-sm" style="margin-right: 10px">Edit</a>
+								{{if $c.Template}}<a href="/hooks/edit/{{$.Hook.ID}}/edit/{{.ID}}" class="btn btn-default btn-sm" style="margin-right: 10px">Edit</a>{{end}}
 								{{/*
 								<button type="submit" name="action" value="move-up" class="btn btn-default btn-xs">Move up</button>
 								<button type="submit" name="action" value="move-down" class="btn btn-default btn-xs">Move down</button>
